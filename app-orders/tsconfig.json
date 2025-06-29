@@ -1,0 +1,7 @@
+{
+  "extends": "@tsconfig/node24/tsconfig.json",
+  "compilersOptions": {
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+  }
+}
