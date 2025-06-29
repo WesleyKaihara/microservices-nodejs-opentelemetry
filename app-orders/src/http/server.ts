@@ -6,6 +6,7 @@ import { channels } from '../broker/channels/index.ts';
 import fastifyCors from '@fastify/cors';
 import { db } from '../db/client.ts';
 import { schema } from '../db/schema/index.ts';
+import { dispatchOrderCreated } from '../broker/messages/order-created.ts';
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -30,13 +31,21 @@ app.post("/orders", {
   
   console.log("[Order] Order created with amount:", amount);
 
-  channels.orders.sendToQueue("orders", Buffer.from("Hello World!"));
+  const orderId = crypto.randomUUID();
+  const customerId = crypto.randomUUID();
+
+  dispatchOrderCreated({
+    orderId,
+    amount,
+    customer: {
+      id: customerId
+    }
+  })
 
   db.insert(schema.orders).values({
-    id: crypto.randomUUID(),
-    customerId: crypto.randomUUID(),
-    amount,
-    createdAt: new Date(),
+    id: orderId,
+    customerId: customerId,
+    amount
   })
 
   return reply.status(201).send();

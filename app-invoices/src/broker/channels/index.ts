@@ -1,4 +1,4 @@
-import { orders } from './orders.ts';
+import { orders } from './orders.js';
 
 export const channels = {
   orders,
